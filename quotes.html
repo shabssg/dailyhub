@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    #quote {
+      font-size: 24px;
+      font-style: italic;
+      margin-bottom: 15px;
+      min-height: 100px;
+    }
+    #author {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #1c5980;
+    }
+  </style>
+</head>
+<body>
+  <h1>💬 Random Quote Generator</h1>
+  <div id="quote">Loading...</div>
+  <div id="author"></div>
+  <button onclick="newQuote()">New Quote</button>
+
+  <script>
+    const quotes = [
+      { text: "The best way to predict the future is to invent it.", author: "Alan Kay" },
+      { text: "Life is 10% what happens to us and 90% how we react to it.", author: "Charles R. Swindoll" },
+      { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
+      { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+      { text: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
+      { text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+      { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+      { text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford" },
+      { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
+      { text: "What we think, we become.", author: "Buddha" },
+      { text: "Dream big and dare to fail.", author: "Norman Vaughan" },
+      { text: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
+      { text: "Happiness depends upon ourselves.", author: "Aristotle" },
+      { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+      { text: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
+      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+      { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+      // Add 30+ more quotes similarly to reach 50+
+      { text: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
+      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+      { text: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
+      { text: "Do not wait to strike till the iron is hot; but make it hot by striking.", author: "William Butler Yeats" },
+      { text: "To handle yourself, use your head; to handle others, use your heart.", author: "Eleanor Roosevelt" },
+      { text: "Act as if what you do makes a difference. It does.", author: "William James" },
+      { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
+      { text: "Don’t count the days, make the days count.", author: "Muhammad Ali" },
+      { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+      { text: "We must let go of the life we have planned, so as to accept the one that is waiting for us.", author: "Joseph Campbell" },
+      { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+      { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+      { text: "Be kind whenever possible. It is always possible.", author: "Dalai Lama" },
+      { text: "Life is really simple, but we insist on making it complicated.", author: "Confucius" },
+      { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
+      { text: "The best revenge is massive success.", author: "Frank Sinatra" },
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+      { text: "Don't wait. The time will never be just right.", author: "Napoleon Hill" },
+      { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+      { text: "Try to be a rainbow in someone’s cloud.", author: "Maya Angelou" },
+      { text: "It’s not whether you get knocked down, it’s whether you get up.", author: "Vince Lombardi" },
+      { text: "To succeed in life, you need two things: ignorance and confidence.", author: "Mark Twain" }
+    ];
+
+    function newQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      document.getElementById('quote').textContent = `"${quotes[randomIndex].text}"`;
+      document.getElementById('author').textContent = `— ${quotes[randomIndex].author}`;
+    }
+
+    window.onload = newQuote;
+  </script>
+</body>
+</html>
