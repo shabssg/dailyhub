@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Binary ↔ Decimal Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 20px;
+      color: #0077cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔁 Binary ↔ Decimal Converter</h1>
+
+  <label>Enter Binary Number:</label>
+  <input type="text" id="binaryInput" placeholder="e.g. 1010" />
+  <button onclick="convertToDecimal()">Convert to Decimal</button>
+
+  <label>Enter Decimal Number:</label>
+  <input type="number" id="decimalInput" placeholder="e.g. 10" />
+  <button onclick="convertToBinary()">Convert to Binary</button>
+
+  <div id="result"></div>
+
+  <script>
+    function convertToDecimal() {
+      const binary = document.getElementById('binaryInput').value.trim();
+      if (!/^[01]+$/.test(binary)) {
+        document.getElementById('result').textContent = "⚠️ Invalid binary number.";
+        return;
+      }
+      const decimal = parseInt(binary, 2);
+      document.getElementById('result').textContent = `Decimal: ${decimal}`;
+    }
+
+    function convertToBinary() {
+      const decimal = document.getElementById('decimalInput').value;
+      if (decimal === '' || isNaN(decimal)) {
+        document.getElementById('result').textContent = "⚠️ Please enter a valid decimal number.";
+        return;
+      }
+      const binary = parseInt(decimal).toString(2);
+      document.getElementById('result').textContent = `Binary: ${binary}`;
+    }
+  </script>
+</body>
+</html>
