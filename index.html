@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DailyHub</title>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 400px;
+      margin: 40px auto;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Welcome to DailyHub</h1>
+  <p>Select a tool to get started:</p>
+
+  <div class="button-grid">
+    <button class="btn" onclick="location.href='calculator.html'">🧮 Calculator</button>
+    <button class="btn" onclick="location.href='todo.html'">📝 To-Do List</button>
+    <button class="btn" onclick="location.href='guess.html'">🎯 Guessing Game</button>
+    <button class="btn" onclick="location.href='dice.html'">🎲 Dice Roller</button>
+    <button class="btn" onclick="location.href='timer.html'">⏱ Countdown Timer</button>
+  </div>
+</body>
+</html>
