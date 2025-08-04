@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tip Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      text-align: center;
+      padding: 50px;
+    }
+    input {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px;
+      width: 150px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    .back {
+      margin-top: 40px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>💸 Tip Calculator</h1>
+  <input type="number" id="billAmount" placeholder="Bill Amount" min="0" step="0.01" />
+  <input type="number" id="tipPercent" placeholder="Tip %" min="0" step="1" />
+  <input type="number" id="peopleCount" placeholder="Number of People" min="1" step="1" /><br />
+  <button onclick="calculateTip()">Calculate</button>
+
+  <div id="result"></div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    function calculateTip() {
+      const bill = parseFloat(document.getElementById('billAmount').value);
+      const tipPercent = parseFloat(document.getElementById('tipPercent').value);
+      const people = parseInt(document.getElementById('peopleCount').value);
+      const resultDiv = document.getElementById('result');
+
+      if (isNaN(bill) || bill < 0) {
+        resultDiv.textContent = "Please enter a valid bill amount.";
+        return;
+      }
+      if (isNaN(tipPercent) || tipPercent < 0) {
+        resultDiv.textContent = "Please enter a valid tip percentage.";
+        return;
+      }
+      if (isNaN(people) || people < 1) {
+        resultDiv.textContent = "Please enter a valid number of people.";
+        return;
+      }
+
+      const tipAmount = bill * (tipPercent / 100);
+      const total = bill + tipAmount;
+      const perPerson = total / people;
+
+      resultDiv.innerHTML = `
+        Tip Amount: €${tipAmount.toFixed(2)}<br/>
+        Total Bill: €${total.toFixed(
