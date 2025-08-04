@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coin Toss Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e8f5e9;
+      text-align: center;
+      padding: 50px;
+    }
+    button {
+      font-size: 24px;
+      padding: 15px 30px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #result {
+      font-size: 80px;
+      margin-top: 40px;
+      user-select: none;
+    }
+    .back {
+      margin-top: 50px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🪙 Coin Toss Simulator</h1>
+  <button onclick="tossCoin()">Flip Coin</button>
+  <div id="result">🤷‍♂️</div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    function tossCoin() {
+      const outcomes = ['Heads', 'Tails'];
+      const emoji = { Heads: '🪙', Tails: '🎲' };
+      const result = outcomes[Math.floor(Math.random() * outcomes.length)];
+      document.getElementById('result').textContent = result + ' ' + emoji[result];
+    }
+  </script>
+</body>
+</html>
