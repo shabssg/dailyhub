@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tic-Tac-Toe (2 Player or vs Bot)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      color: #222;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      text-align: center;
+    }
+    #settings {
+      margin-bottom: 20px;
+    }
+    select {
+      font-size: 16px;
+      padding: 8px 12px;
+      margin-right: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .cell {
+      background: white;
+      border: 2px solid #3498db;
+      font-size: 60px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .cell:hover {
+      background-color: #d6eaff;
+    }
+    #status {
+      font-size: 22px;
+      margin-bottom: 20px;
+      min-height: 30px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 25px;
+      font-size: 18px;
+      background: #3498db;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎮 Tic-Tac-Toe</h1>
+
+  <div id="settings">
+    <label>
+      Mode:
+      <select id="modeSelect">
+        <option value="2p">2 Player</option>
+        <option value="bot">Play vs Bot</option>
+      </select>
+    </label>
+    <label id="difficultyLabel" style="display:none;">
+      Difficulty:
+      <select id="difficultySelect">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+
+  <div id="status">Player X's turn</div>
+
+  <button onclick="resetGame()">Reset Game</button>
+
+  <script>
+    const boardElem = document.getElementById('board');
+    const cells = document.querySelectorAll('.cell');
+    const statusDiv = document.getElementById('status');
+    const modeSelect = document.getElementById('modeSelect');
+    const difficultySelect = document.getElementById('difficultySelect');
+    const difficultyLabel = document.getElementById('difficultyLabel');
+
+    let board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let vsBot = false;
+    let botDifficulty = 'medium';
+
+    const winningConditions = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    // Show/hide difficulty dropdown based on mode
+    modeSelect.addEventListener('change', () => {
+      vsBot = modeSelect.value === 'bot';
+      difficultyLabel.style.display = vsBot ? 'inline-block' : 'none';
+      resetGame();
+    });
+
+    difficultySelect.addEventListener('change', () => {
+      botDifficulty = difficultySelect.value;
+      resetGame();
+    });
+
+    cells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (!gameActive) return;
+        const index = parseInt(cell.getAttribute('data-index'));
+        if (board[index] !== null) return;
+
+        makeMove(index, currentPlayer);
+
+        if (checkWin(currentPlayer)) {
+          statusDiv.textContent = `🎉 Player ${currentPlayer} wins!`;
+          gameActive = false;
+          return;
+        }
+
+        if (board.every(c => c !== null)) {
+          statusDiv.textContent = "It's a draw!";
+          gameActive = false;
+          return;
+        }
+
+        if (vsBot) {
+          // Bot's turn
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          statusDiv.textContent = `Player ${currentPlayer}'s turn`;
+          setTimeout(botMove, 500);
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          statusDiv.textContent = `Player ${currentPlayer}'s turn`;
+        }
+      });
+    });
+
+    function makeMove(index, player) {
+      board[index] = player;
+      cells[index].textContent = player;
+    }
+
+    function checkWin(player) {
+      return winningConditions.some(condition => condition.every(i => board[i] === player));
+    }
+
+    function resetGame() {
+      board = Array(9).fill(null);
+      cells.forEach(cell => cell.textContent = '');
+      currentPlayer = 'X';
+      gameActive = true;
+      vsBot = modeSelect.value === 'bot';
+      botDifficulty = difficultySelect.value;
+      difficultyLabel.style.display = vsBot ? 'inline-block' : 'none';
+      statusDiv.textContent = `Player ${currentPlayer}'s turn`;
+
+      // If bot plays first as X (optional) - right now human always starts
+    }
+
+    // Bot Logic
+
+    function botMove() {
+      if (!gameActive) return;
+
+      let index;
+      if (botDifficulty === 'easy') {
+        index = getRandomMove();
+      } else if (botDifficulty === 'medium') {
+        index = getMediumMove();
+      } else {
+        index = getBestMove(board, currentPlayer);
+      }
+
+      makeMove(index, currentPlayer);
+
+      if (checkWin(currentPlayer)) {
+        statusDiv.textContent = `🤖 Bot (${currentPlayer}) wins!`;
+        gameActive = false;
+        return;
+      }
+
+      if (board.every(c => c !== null)) {
+        statusDiv.textContent = "It's a draw!";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusDiv.textContent = `Player ${currentPlayer}'s turn`;
+    }
+
+    function getRandomMove() {
+      const available = board.map((v, i) => v === null ? i : null).filter(i => i !== null);
+      return available[Math.floor(Math.random() * available.length)];
+    }
+
+    // Medium: Try to win or block opponent, else random
+    function getMediumMove() {
+      // 1. Win if possible
+      for (let i of getAvailableMoves()) {
+        board[i] = currentPlayer;
+        if (checkWin(currentPlayer)) {
+          board[i] = null;
+          return i;
+        }
+        board[i] = null;
+      }
+      // 2. Block opponent's win
+      const opponent = currentPlayer === 'X' ? 'O' : 'X';
+      for (let i of getAvailableMoves()) {
+        board[i] = opponent;
+        if (checkWin(opponent)) {
+          board[i] = null;
+          return i;
+        }
+        board[i] = null;
+      }
+      // 3. Else random
+      return getRandomMove();
+    }
+
+    function getAvailableMoves() {
+      return board.map((v,i) => v === null ? i : null).filter(i => i !== null);
+    }
+
+    // Hard = Minimax algorithm
+
+    function getBestMove(newBoard, player) {
+      const opponent = player === 'X' ? 'O' : 'X';
+
+      // Check terminal states
+      if (checkWinForBoard(newBoard, player)) return {score: 10};
+      if (checkWinForBoard(newBoard, opponent)) return {score: -10};
+      if (newBoard.every(cell => cell !== null)) return {score: 0};
+
+      const moves = [];
+
+      for (let i = 0; i < newBoard.length; i++) {
+        if (newBoard[i] === null) {
+          const move = {};
+          move.index = i;
+          newBoard[i] = player;
+
+          const result = getBestMove(newBoard, opponent);
+          move.score = -result.score;
+
+          newBoard[i] = null;
+          moves.push(move);
+        }
+      }
+
+      // Find best move
+      let bestMove = moves.reduce((best, move) => move.score > best.score ? move : best, {score: -Infinity});
+      return bestMove.index;
+    }
+
+    function checkWinForBoard(boardToCheck, player) {
+      return winningConditions.some(condition => condition.every(i => boardToCheck[i] === player));
+    }
+
+    // Initialize
+    resetGame();
+  </script>
+
+</body>
+</html>
