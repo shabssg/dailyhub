@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flashcard Quiz - Difficulty Levels</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: #333;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+      text-align: center;
+    }
+    #difficultyButtons {
+      margin-bottom: 30px;
+    }
+    #difficultyButtons button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    #difficultyButtons button.active {
+      box-shadow: 0 0 8px 3px rgba(0,0,0,0.2);
+    }
+    #easyBtn { background-color: #7bed9f; color: #2d572c; }
+    #mediumBtn { background-color: #f7dc6f; color: #7a5e00; }
+    #hardBtn { background-color: #f28b82; color: #5a1a16; }
+
+    #flashcard {
+      width: 320px;
+      height: 220px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.5s;
+      perspective: 1000px;
+      position: relative;
+    }
+    #flashcard.flipped .front {
+      transform: rotateY(180deg);
+    }
+    #flashcard.flipped .back {
+      transform: rotateY(0deg);
+    }
+    .front, .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
+      font-weight: 700;
+    }
+    .front {
+      color: white;
+      transform: rotateY(0deg);
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.3);
+    }
+    .back {
+      background: #ecf0f1;
+      color: #333;
+      font-style: italic;
+      transform: rotateY(180deg);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+      font-weight: 600;
+    }
+    #controls {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    button.control-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button.control-btn:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    button.control-btn:hover:not(:disabled) {
+      background-color: #2980b9;
+    }
+    #cardCounter {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📚 Flashcard Quiz - Difficulty Levels</h1>
+
+  <div id="difficultyButtons">
+    <button id="easyBtn" class="active">Easy (Green)</button>
+    <button id="mediumBtn">Medium (Yellow)</button>
+    <button id="hardBtn">Hard (Red)</button>
+  </div>
+
+  <div id="flashcard">
+    <div class="front"></div>
+    <div class="back"></div>
+  </div>
+
+  <div id="controls">
+    <button id="prevBtn" class="control-btn">Previous</button>
+    <button id="nextBtn" class="control-btn">Next</button>
+  </div>
+
+  <div id="cardCounter"></div>
+
+<script>
+  // Questions for each difficulty (example questions, feel free to replace)
+  const flashcardsData = {
+    easy: [
+      { question: "2 + 2 = ?", answer: "4" },
+      { question: "Capital of USA?", answer: "Washington D.C." },
+      { question: "Water's chemical formula?", answer: "H₂O" },
+      { question: "Sun rises in the ___?", answer: "East" },
+      { question: "Opposite of hot?", answer: "Cold" },
+      { question: "5 - 3 = ?", answer: "2" },
+      { question: "Primary color: Red, Blue and ___?", answer: "Yellow" },
+      { question: "How many legs does a spider have?", answer: "8" },
+      { question: "Snow is ___ in color.", answer: "White" },
+      { question: "What do bees produce?", answer: "Honey" },
+      { question: "Earth revolves around the ___", answer: "Sun" },
+      { question: "What do cows give us?", answer: "Milk" },
+      { question: "Opposite of up?", answer: "Down" },
+      { question: "Number of continents?", answer: "7" },
+      { question: "Water freezes at ___ °C", answer: "0" },
+      { question: "What color are bananas?", answer: "Yellow" },
+      { question: "What do plants need to grow?", answer: "Sunlight" },
+      { question: "What gas do we breathe?", answer: "Oxygen" },
+      { question: "A triangle has how many sides?", answer: "3" },
+      { question: "The color of the sky?", answer: "Blue" }
+    ],
+    medium: [
+      { question: "Who painted the Mona Lisa?", answer: "Leonardo da Vinci" },
+      { question: "What is the capital of Japan?", answer: "Tokyo" },
+      { question: "What planet is closest to the Sun?", answer: "Mercury" },
+      { question: "H2SO4 is called?", answer: "Sulfuric acid" },
+      { question: "Speed of light approx.?", answer: "300,000 km/s" },
+      { question: "Square root of 64?", answer: "8" },
+      { question: "Who wrote Hamlet?", answer: "William Shakespeare" },
+      { question: "What is photosynthesis?", answer: "Process plants make food" },
+      { question: "Largest ocean?", answer: "Pacific" },
+      { question: "Who discovered gravity?", answer: "Isaac Newton" },
+      { question: "What year did WW2 end?", answer: "1945" },
+      { question: "Currency of UK?", answer: "Pound Sterling" },
+      { question: "Atomic number of carbon?", answer: "6" },
+      { question: "Who invented the telephone?", answer: "Alexander Graham Bell" },
+      { question: "What is DNA?", answer: "Genetic material" },
+      { question: "What is a prime number?", answer: "A number divisible only by 1 and itself" },
+      { question: "Largest planet?", answer: "Jupiter" },
+      { question: "Capital of Australia?", answer: "Canberra" },
+      { question: "Element symbol Fe?", answer: "Iron" },
+      { question: "What does CPU stand for?", answer: "Central Processing Unit" }
+    ],
+    hard: [
+      { question: "What is the Riemann Hypothesis?", answer: "An unsolved conjecture about prime numbers distribution" },
+      { question: "Who formulated the laws of motion?", answer: "Isaac Newton" },
+      { question: "What is Schrödinger's cat?", answer: "A thought experiment in quantum mechanics" },
+      { question: "Euler's formula relates which fields?", answer: "Complex analysis and trigonometry" },
+      { question: "What is the capital of Burkina Faso?", answer: "Ouagadougou" },
+      { question: "What is Fermat's Last Theorem?", answer: "No integer solutions for a^n + b^n = c^n for n>2" },
+      { question: "What is a black hole?", answer: "A region of spacetime with gravity so strong nothing escapes" },
+      { question: "Define entropy in thermodynamics.", answer: "Measure of disorder or randomness" },
+      { question: "What does RNA stand for?", answer: "Ribonucleic Acid" },
+      { question: "Who was Emmy Noether?", answer: "A mathematician known for Noether's theorem" },
+      { question: "What is Gödel's incompleteness theorem?", answer: "Limits of provability in formal systems" },
+      { question: "Define dark matter.", answer: "Matter that does not emit light but has gravitational effects" },
+      { question: "What is Heisenberg's uncertainty principle?", answer: "You cannot simultaneously know position and momentum exactly" },
+      { question: "Capital of Kyrgyzstan?", answer: "Bishkek" },
+      { question: "Who developed general relativity?", answer: "Albert Einstein" },
+      { question: "What is a tautology in logic?", answer: "A statement true in every interpretation" },
+      { question: "What is the Mandelbrot set?", answer: "Set of complex numbers producing fractal shapes" },
+      { question: "What is quantum entanglement?", answer: "Particles linked regardless of distance" },
+      { question: "What does GDP stand for?", answer: "Gross Domestic Product" },
+      { question: "What is the Pythagorean theorem?", answer: "a² + b² = c² in right triangles" }
+    ]
+  };
+
+  const flashcard = document.getElementById('flashcard');
+  const frontDiv = flashcard.querySelector('.front');
+  const backDiv = flashcard.querySelector('.back');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const cardCounter = document.getElementById('cardCounter');
+  const easyBtn = document.getElementById('easyBtn');
+  const mediumBtn = document.getElementById('mediumBtn');
+  const hardBtn = document.getElementById('hardBtn');
+
+  let currentDifficulty = 'easy';
+  let currentIndex = 0;
+
+  function updateCard() {
+    flashcard.classList.remove('flipped');
+    const cardData = flashcardsData[currentDifficulty][currentIndex];
+    frontDiv.textContent = cardData.question;
+    backDiv.textContent = cardData.answer;
+
+    // Update background color by difficulty
+    if (currentDifficulty === 'easy') {
+      frontDiv.style.backgroundColor = '#7bed9f';  // Light Green
+      frontDiv.style.color = '#2d572c';
+    } else if (currentDifficulty === 'medium') {
+      frontDiv.style.backgroundColor = '#f7dc6f';  // Light Yellow
+      frontDiv.style.color = '#7a5e00';
+    } else {
+      frontDiv.style.backgroundColor = '#f28b82';  // Light Red
+      frontDiv.style.color = '#5a1a16';
+    }
+
+    cardCounter.textContent = `Card ${currentIndex + 1} of ${flashcardsData[currentDifficulty].length}`;
+
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === flashcardsData[currentDifficulty].length - 1;
+  }
+
+  flashcard.addEventListener('click', () => {
+    flashcard.classList.toggle('flipped');
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateCard();
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (currentIndex < flashcardsData[currentDifficulty].length - 1) {
+      currentIndex++;
+      updateCard();
+    }
+  });
+
+  function setDifficulty(difficulty) {
+    if (difficulty === currentDifficulty) return;
+    currentDifficulty = difficulty;
+    currentIndex = 0;
+    updateCard();
+    updateActiveButton();
+  }
+
+  function updateActiveButton() {
+    easyBtn.classList.toggle('active', currentDifficulty === 'easy');
+    mediumBtn.classList.toggle('active', currentDifficulty === 'medium');
+    hardBtn.classList.toggle('active', currentDifficulty === 'hard');
+  }
+
+  easyBtn.addEventListener('click', () => setDifficulty('easy'));
+  mediumBtn.addEventListener('click', () => setDifficulty('medium'));
+  hardBtn.addEventListener('click', () => setDifficulty('hard'));
+
+  // Initial setup
+  updateCard();
+  updateActiveButton();
+</script>
+
+</body>
+</html>
