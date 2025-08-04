@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Currency Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 50px;
+    }
+    input, select {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px;
+      width: 220px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 25px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    .back {
+      margin-top: 40px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌍 Currency Converter</h1>
+
+  <input type="number" id="amount" placeholder="Amount" min="0" />
+  <br>
+
+  <select id="fromCurrency"></select>
+  <select id="toCurrency"></select>
+  <br>
+
+  <button onclick="convertCurrency()">Convert</button>
+  <div id="result"></div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    const currencies = {
+      USD: 1,
+      EUR: 0.91,
+      GBP: 0.78,
+      JPY: 144.3,
+      AUD: 1.52,
+      CAD: 1.34,
+      CHF: 0.88,
+      CNY: 7.2,
+      INR: 83.1,
+      RUB: 91.5,
+      BRL: 5.0,
+      ZAR: 18.5,
+      SEK: 10.3,
+      NZD: 1.67,
+      SGD: 1.36,
+      HKD: 7.8,
+      NOK: 10.4,
+      MXN: 16.9,
+      TRY: 33.1,
+      KRW: 1320
+    };
+
+    const currencyNames = {
+      USD: "🇺🇸 USD - US Dollar",
+      EUR: "🇪🇺 EUR - Euro",
+      GBP: "🇬🇧 GBP - British Pound",
+      JPY: "🇯🇵 JPY - Japanese Yen",
+      AUD: "🇦🇺 AUD - Australian Dollar",
+      CAD: "🇨🇦 CAD - Canadian Dollar",
+      CHF: "🇨🇭 CHF - Swiss Franc",
+      CNY: "🇨🇳 CNY - Chinese Yuan",
+      INR: "🇮🇳 INR - Indian Rupee",
+      RUB: "🇷🇺 RUB - Russian Ruble",
+      BRL: "🇧🇷 BRL - Brazilian Real",
+      ZAR: "🇿🇦 ZAR - South African Rand",
+      SEK: "🇸🇪 SEK - Swedish Krona",
+      NZD: "🇳🇿 NZD - New Zealand Dollar",
+      SGD: "🇸🇬 SGD - Singapore Dollar",
+      HKD: "🇭🇰 HKD - Hong Kong Dollar",
+      NOK: "🇳🇴 NOK - Norwegian Krone",
+      MXN: "🇲🇽 MXN - Mexican Peso",
+      TRY: "🇹🇷 TRY - Turkish Lira",
+      KRW: "🇰🇷 KRW - Korean Won"
+    };
+
+    const fromSelect = document.getElementById('fromCurrency');
+    const toSelect = document.getElementById('toCurrency');
+
+    Object.keys(currencies).forEach(code => {
+      const option1 = document.createElement('option');
+      option1.value = code;
+      option1.textContent = currencyNames[code];
+      fromSelect.appendChild(option1);
+
+      const option2 = document.createElement('option');
+      option2.value = code;
+      option2.textContent = currencyNames[code];
+      toSelect.appendChild(option2);
+    });
+
+    fromSelect.value = "USD";
+    toSelect.value = "EUR";
+
+    function convertCurrency() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      const from = fromSelect.value;
+      const to = toSelect.value;
+
+      if (isNaN(amount) || amount <= 0) {
+        document.getElementById('result').textContent = "Enter a valid amount.";
+        return;
+      }
+
+      if (from === to) {
+        document.getElementById('result').textContent = `Same currency: ${amount.toFixed(2)} ${to}`;
+        return;
+      }
+
+      const usdAmount = amount / currencies[from];
+      const converted = usdAmount * currencies[to];
+
+      document.getElementById('result').textContent = `${amount.toFixed(2)} ${from} = ${converted.toFixed(2)} ${to}`;
+    }
+  </script>
+
+</body>
+</html>
