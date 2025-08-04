@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Text Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4c3;
+      text-align: center;
+      padding: 40px;
+    }
+    textarea {
+      width: 80%;
+      height: 150px;
+      font-size: 16px;
+      padding: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+    .back {
+      margin-top: 40px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>✍️ Text Counter</h1>
+  <textarea id="textInput" placeholder="Type or paste your text here..." oninput="countText()"></textarea>
+  <div id="result">Characters: 0 | Words: 0</div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    function countText() {
+      const text = document.getElementById('textInput').value;
+      const chars = text.length;
+      const words = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+      document.getElementById('result').textContent = `Characters: ${chars} | Words: ${words}`;
+    }
+  </script>
+</body>
+</html>
