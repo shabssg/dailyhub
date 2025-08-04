@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Whack-a-Mole</title>
+  <style>
+    body {
+      background: #f0f4f8;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    #game {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .hole {
+      width: 100px;
+      height: 100px;
+      background-color: #d0e6ff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .hole:hover {
+      background-color: #c0ddff;
+    }
+
+    #score {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Whack-a-Mole</h1>
+  <p>Click the mole as fast as you can!</p>
+
+  <div id="game">
+    <div class="hole" id="hole0"></div>
+    <div class="hole" id="hole1"></div>
+    <div class="hole" id="hole2"></div>
+    <div class="hole" id="hole3"></div>
+    <div class="hole" id="hole4"></div>
+    <div class="hole" id="hole5"></div>
+    <div class="hole" id="hole6"></div>
+    <div class="hole" id="hole7"></div>
+    <div class="hole" id="hole8"></div>
+  </div>
+
+  <div id="score">Score: 0</div>
+  <button onclick="startGame()">Start Game</button>
+
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    let score = 0;
+    let currentMole = null;
+    let gameInterval = null;
+
+    function showMole() {
+      if (currentMole !== null) {
+        holes[currentMole].textContent = '';
+      }
+
+      currentMole = Math.floor(Math.random() * 9);
+      holes[currentMole].textContent = '🐹';
+
+      holes[currentMole].onclick = () => {
+        score++;
+        document.getElementById('score').textContent = "Score: " + score;
+        holes[currentMole].textContent = '';
+        currentMole = null;
+      };
+    }
+
+    function startGame() {
+      score = 0;
+      document.getElementById('score').textContent = "Score: 0";
+      clearInterval(gameInterval);
+      gameInterval = setInterval(showMole, 800);
+      setTimeout(() => {
+        clearInterval(gameInterval);
+        alert("Time's up! Your score: " + score);
+      }, 30000); // Game runs for 30 seconds
+    }
+  </script>
+
+</body>
+</html>
