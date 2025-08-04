@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Simon Says Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #eee;
+    text-align: center;
+    padding: 40px;
+  }
+  h1 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  #game {
+    display: grid;
+    grid-template-columns: repeat(2, 150px);
+    grid-gap: 20px;
+    justify-content: center;
+    margin: 20px auto;
+  }
+  .btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+  .btn:active, .btn.active {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+  #red { background: #ff4d4d; }
+  #green { background: #4dff4d; }
+  #blue { background: #4d4dff; }
+  #yellow { background: #ffff4d; }
+
+  #status {
+    margin-top: 30px;
+    font-size: 24px;
+  }
+  #startBtn {
+    margin-top: 30px;
+    padding: 12px 25px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background-color: #3498db;
+    color: white;
+  }
+  #startBtn:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+
+  <h1>🎵 Simon Says</h1>
+  <div id="game">
+    <div class="btn" id="red"></div>
+    <div class="btn" id="green"></div>
+    <div class="btn" id="blue"></div>
+    <div class="btn" id="yellow"></div>
+  </div>
+
+  <div id="status">Press Start to play!</div>
+  <button id="startBtn">Start Game</button>
+
+<script>
+  const btns = {
+    red: document.getElementById('red'),
+    green: document.getElementById('green'),
+    blue: document.getElementById('blue'),
+    yellow: document.getElementById('yellow'),
+  };
+
+  const colors = ['red', 'green', 'blue', 'yellow'];
+
+  let sequence = [];
+  let playerSequence = [];
+  let level = 0;
+  let acceptingInput = false;
+
+  const statusDiv = document.getElementById('status');
+  const startBtn = document.getElementById('startBtn');
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function playSequence() {
+    acceptingInput = false;
+    for (let color of sequence) {
+      await lightUp(color);
+      await sleep(400);
+    }
+    acceptingInput = true;
+    playerSequence = [];
+    statusDiv.textContent = `Level ${level}: Your turn`;
+  }
+
+  function lightUp(color) {
+    return new Promise(resolve => {
+      btns[color].classList.add('active');
+      // sound effect could be added here
+      setTimeout(() => {
+        btns[color].classList.remove('active');
+        resolve();
+      }, 600);
+    });
+  }
+
+  function nextLevel() {
+    level++;
+    statusDiv.textContent = `Level ${level}: Watch the sequence`;
+    sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+    playSequence();
+  }
+
+  async function gameOver() {
+    statusDiv.textContent = `Game Over! You reached level ${level}. Press Start to try again.`;
+    acceptingInput = false;
+    sequence = [];
+    playerSequence = [];
+    level = 0;
+    startBtn.disabled = false;
+  }
+
+  for (let color of colors) {
+    btns[color].addEventListener('click', () => {
+      if (!acceptingInput) return;
+      playerSequence.push(color);
+      lightUp(color);
+
+      const currentIndex = playerSequence.length - 1;
+      if (playerSequence[currentIndex] !== sequence[currentIndex]) {
+        gameOver();
+        return;
+      }
+
+      if (playerSequence.length === sequence.length) {
+        acceptingInput = false;
+        statusDiv.textContent = 'Good job! Next round...';
+        setTimeout(nextLevel, 1000);
+      }
+    });
+  }
+
+  startBtn.addEventListener('click', () => {
+    startBtn.disabled = true;
+    sequence = [];
+    playerSequence = [];
+    level = 0;
+    nextLevel();
+  });
+
+</script>
+
+</body>
+</html>
