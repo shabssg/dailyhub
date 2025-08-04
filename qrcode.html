@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f3f4f6;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      max-width: 400px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #qrCode {
+      margin-top: 30px;
+    }
+    .back {
+      margin-top: 40px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔳 QR Code Generator</h1>
+  <input type="text" id="text" placeholder="Enter text or link..." />
+  <br>
+  <button onclick="generateQR()">Generate QR Code</button>
+  <div id="qrCode"></div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    function generateQR() {
+      const text = document.getElementById('text').value;
+      if (!text.trim()) {
+        alert("Please enter some text or a link.");
+        return;
+      }
+      const encoded = encodeURIComponent(text);
+      const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encoded}`;
+      document.getElementById('qrCode').innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
+    }
+  </script>
+</body>
+</html>
