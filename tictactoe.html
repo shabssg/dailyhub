@@ -131,7 +131,6 @@
       [0,4,8], [2,4,6]
     ];
 
-    // Show/hide difficulty dropdown based on mode
     modeSelect.addEventListener('change', () => {
       vsBot = modeSelect.value === 'bot';
       difficultyLabel.style.display = vsBot ? 'inline-block' : 'none';
@@ -164,7 +163,6 @@
         }
 
         if (vsBot) {
-          // Bot's turn
           currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
           statusDiv.textContent = `Player ${currentPlayer}'s turn`;
           setTimeout(botMove, 500);
@@ -193,11 +191,7 @@
       botDifficulty = difficultySelect.value;
       difficultyLabel.style.display = vsBot ? 'inline-block' : 'none';
       statusDiv.textContent = `Player ${currentPlayer}'s turn`;
-
-      // If bot plays first as X (optional) - right now human always starts
     }
-
-    // Bot Logic
 
     function botMove() {
       if (!gameActive) return;
@@ -234,9 +228,7 @@
       return available[Math.floor(Math.random() * available.length)];
     }
 
-    // Medium: Try to win or block opponent, else random
     function getMediumMove() {
-      // 1. Win if possible
       for (let i of getAvailableMoves()) {
         board[i] = currentPlayer;
         if (checkWin(currentPlayer)) {
@@ -245,7 +237,7 @@
         }
         board[i] = null;
       }
-      // 2. Block opponent's win
+
       const opponent = currentPlayer === 'X' ? 'O' : 'X';
       for (let i of getAvailableMoves()) {
         board[i] = opponent;
@@ -255,7 +247,7 @@
         }
         board[i] = null;
       }
-      // 3. Else random
+
       return getRandomMove();
     }
 
@@ -263,15 +255,12 @@
       return board.map((v,i) => v === null ? i : null).filter(i => i !== null);
     }
 
-    // Hard = Minimax algorithm
-
     function getBestMove(newBoard, player) {
       const opponent = player === 'X' ? 'O' : 'X';
 
-      // Check terminal states
-      if (checkWinForBoard(newBoard, player)) return {score: 10};
-      if (checkWinForBoard(newBoard, opponent)) return {score: -10};
-      if (newBoard.every(cell => cell !== null)) return {score: 0};
+      if (checkWinForBoard(newBoard, player)) return { score: 10 };
+      if (checkWinForBoard(newBoard, opponent)) return { score: -10 };
+      if (newBoard.every(cell => cell !== null)) return { score: 0 };
 
       const moves = [];
 
@@ -289,8 +278,13 @@
         }
       }
 
-      // Find best move
-      let bestMove = moves.reduce((best, move) => move.score > best.score ? move : best, {score: -Infinity});
+      let bestMove = moves[0];
+      for (let i = 1; i < moves.length; i++) {
+        if (moves[i].score > bestMove.score) {
+          bestMove = moves[i];
+        }
+      }
+
       return bestMove.index;
     }
 
@@ -298,7 +292,6 @@
       return winningConditions.some(condition => condition.every(i => boardToCheck[i] === player));
     }
 
-    // Initialize
     resetGame();
   </script>
 
