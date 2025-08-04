@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f9fafb;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #2c3e50;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      flex: 1 1 200px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: white;
+      margin-bottom: 10px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .expense-desc {
+      font-weight: 600;
+      max-width: 60%;
+      overflow-wrap: break-word;
+    }
+    .expense-amount {
+      color: #2ecc71;
+      font-weight: 700;
+      margin-left: 10px;
+      min-width: 70px;
+      text-align: right;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 15px;
+      transition: background-color 0.3s ease;
+    }
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+    #total {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 20px;
+      text-align: right;
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💰 Expense Tracker</h1>
+
+  <form id="expenseForm">
+    <input type="text" id="description" placeholder="Expense description" required />
+    <input type="number" id="amount" placeholder="Amount (€)" step="0.01" min="0.01" required />
+    <button type="submit">Add</button>
+  </form>
+
+  <ul id="expenseList"></ul>
+
+  <div id="total">Total: €0.00</div>
+
+<script>
+  const form = document.getElementById('expenseForm');
+  const descInput = document.getElementById('description');
+  const amountInput = document.getElementById('amount');
+  const expenseList = document.getElementById('expenseList');
+  const totalDisplay = document.getElementById('total');
+
+  // Load expenses from localStorage or empty array
+  let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+  function saveExpenses() {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }
+
+  function renderExpenses() {
+    expenseList.innerHTML = '';
+    let total = 0;
+
+    expenses.forEach((expense, index) => {
+      total += parseFloat(expense.amount);
+
+      const li = document.createElement('li');
+
+      const descSpan = document.createElement('span');
+      descSpan.className = 'expense-desc';
+      descSpan.textContent = expense.description;
+
+      const amountSpan = document.createElement('span');
+      amountSpan.className = 'expense-amount';
+      amountSpan.textContent = `€${parseFloat(expense.amount).toFixed(2)}`;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.onclick = () => {
+        expenses.splice(index, 1);
+        saveExpenses();
+        renderExpenses();
+      };
+
+      li.appendChild(descSpan);
+      li.appendChild(amountSpan);
+      li.appendChild(deleteBtn);
+
+      expenseList.appendChild(li);
+    });
+
+    totalDisplay.textContent = `Total: €${total.toFixed(2)}`;
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const description = descInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+
+    if (description && !isNaN(amount) && amount > 0) {
+      expenses.push({ description, amount });
+      saveExpenses();
+      renderExpenses();
+      form.reset();
+    }
+  });
+
+  // Initial render
+  renderExpenses();
+</script>
+
+</body>
+</html>
