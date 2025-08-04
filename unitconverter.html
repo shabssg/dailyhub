@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Unit Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fffbe6;
+      padding: 50px;
+    }
+    input, select, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px 5px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #333;
+    }
+    .back {
+      margin-top: 40px;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔄 Unit Converter</h1>
+
+  <input type="number" id="value" placeholder="Enter value" />
+  
+  <select id="unitFrom">
+    <option value="cm">Centimeters (cm)</option>
+    <option value="in">Inches (in)</option>
+    <option value="kg">Kilograms (kg)</option>
+    <option value="lb">Pounds (lb)</option>
+  </select>
+
+  <select id="unitTo">
+    <option value="in">Inches (in)</option>
+    <option value="cm">Centimeters (cm)</option>
+    <option value="lb">Pounds (lb)</option>
+    <option value="kg">Kilograms (kg)</option>
+  </select>
+
+  <button onclick="convert()">Convert</button>
+
+  <div id="result"></div>
+
+  <div class="back" onclick="window.location.href='index.html'">⬅ Back to Home</div>
+
+  <script>
+    function convert() {
+      const value = parseFloat(document.getElementById('value').value);
+      const from = document.getElementById('unitFrom').value;
+      const to = document.getElementById('unitTo').value;
+      const resultDiv = document.getElementById('result');
+
+      if (isNaN(value)) {
+        resultDiv.textContent = "Please enter a valid number.";
+        return;
+      }
+      if (from === to) {
+        resultDiv.textContent = "Please select different units to convert.";
+        return;
+      }
+
+      let result;
+
+      if (from === 'cm' && to === 'in') result = value / 2.54;
+      else if (from === 'in' && to === 'cm') result = value * 2.54;
+      else if (from === 'kg' && to === 'lb') result = value * 2.20462;
+      else if (from === 'lb' && to === 'kg') result = value / 2.20462;
+      else {
+        resultDiv.textContent = "Conversion not supported.";
+        return;
+      }
+
+      resultDiv.textContent = `${value} ${from} = ${result.toFixed(2)} ${to}`;
+    }
+  </script>
+</body>
+</html>
