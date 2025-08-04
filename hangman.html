@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Hangman Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #eee;
+    text-align: center;
+    padding: 30px;
+  }
+  #word {
+    font-size: 36px;
+    letter-spacing: 8px;
+    margin-bottom: 20px;
+  }
+  #letters {
+    margin: 15px auto;
+    max-width: 400px;
+  }
+  button.letter {
+    font-size: 18px;
+    padding: 10px 14px;
+    margin: 4px;
+    width: 36px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: #444;
+    color: #eee;
+    user-select: none;
+  }
+  button.letter:disabled {
+    background: #888;
+    cursor: not-allowed;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 24px;
+  }
+  #resetBtn {
+    margin-top: 25px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: #3498db;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+  <h1>🪢 Hangman Game</h1>
+  <div id="word"></div>
+  <div id="letters"></div>
+  <div id="message"></div>
+  <button id="resetBtn">Restart Game</button>
+
+<script>
+  const words = [
+    "apple", "banana", "cherry", "diamond", "elephant",
+    "forest", "guitar", "happiness", "island", "jungle",
+    "kangaroo", "lemon", "mountain", "notebook", "ocean",
+    "pencil", "quilt", "rainbow", "sunshine", "tiger",
+    "umbrella", "violin", "waterfall", "xylophone", "yacht",
+    "zebra", "airplane", "balloon", "candle", "desert",
+    "engine", "flower", "garden", "holiday", "iceberg",
+    "jacket", "kitten", "lantern", "mirror", "nest",
+    "orange", "pumpkin", "queen", "rocket", "snowflake",
+    "treasure", "unicorn", "volcano", "window", "zombie"
+  ];
+
+  let selectedWord = '';
+  let guessedLetters = [];
+  let maxWrong = 6;
+  let wrongGuesses = 0;
+
+  const wordDiv = document.getElementById('word');
+  const lettersDiv = document.getElementById('letters');
+  const messageDiv = document.getElementById('message');
+  const resetBtn = document.getElementById('resetBtn');
+
+  function init() {
+    selectedWord = words[Math.floor(Math.random() * words.length)];
+    guessedLetters = [];
+    wrongGuesses = 0;
+    messageDiv.textContent = '';
+    createLetterButtons();
+    updateWord();
+  }
+
+  function createLetterButtons() {
+    lettersDiv.innerHTML = '';
+    for(let i=65; i<=90; i++) {
+      const letter = String.fromCharCode(i).toLowerCase();
+      const btn = document.createElement('button');
+      btn.textContent = letter;
+      btn.classList.add('letter');
+      btn.addEventListener('click', () => guess(letter, btn));
+      lettersDiv.appendChild(btn);
+    }
+  }
+
+  function updateWord() {
+    let display = '';
+    for (let char of selectedWord) {
+      display += guessedLetters.includes(char) ? char.toUpperCase() + ' ' : '_ ';
+    }
+    wordDiv.textContent = display.trim();
+  }
+
+  function guess(letter, btn) {
+    btn.disabled = true;
+    if (selectedWord.includes(letter)) {
+      guessedLetters.push(letter);
+      updateWord();
+      checkWin();
+    } else {
+      wrongGuesses++;
+      checkLose();
+    }
+  }
+
+  function checkWin() {
+    const won = selectedWord.split('').every(char => guessedLetters.includes(char));
+    if (won) {
+      messageDiv.textContent = '🎉 You won! Congrats!';
+      disableLetters();
+    }
+  }
+
+  function checkLose() {
+    if (wrongGuesses >= maxWrong) {
+      messageDiv.textContent = `😞 You lost! The word was "${selectedWord.toUpperCase()}"`;
+      revealWord();
+      disableLetters();
+    } else {
+      messageDiv.textContent = `Wrong guesses: ${wrongGuesses} / ${maxWrong}`;
+    }
+  }
+
+  function disableLetters() {
+    document.querySelectorAll('.letter').forEach(btn => btn.disabled = true);
+  }
+
+  function revealWord() {
+    let display = '';
+    for (let char of selectedWord) {
+      display += char.toUpperCase() + ' ';
+    }
+    wordDiv.textContent = display.trim();
+  }
+
+  resetBtn.addEventListener('click', init);
+
+  init();
+</script>
+
+</body>
+</html>
